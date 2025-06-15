@@ -10,12 +10,15 @@ const ChatContainer = () => {
   const scrollEnd = useRef()
 
   const [input ,setInput]=useState('');
+const [isSending, setIsSending] = useState(false);
 
   const handleSendMessage = async (e)=>{
     e.preventDefault();
-    if(input.trim() === "")return null;
+    if(isSeending || input.trim() === "")return null;
+setIsSending(true);
     await sendMessage({text:input.trim()});
     setInput("");
+setIsSending(false);
   }
 
   //Handle sending an image
