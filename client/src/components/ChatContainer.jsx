@@ -14,7 +14,7 @@ const [isSending, setIsSending] = useState(false);
 
   const handleSendMessage = async (e)=>{
     e.preventDefault();
-    if(isSeending || input.trim() === "")return null;
+    if(isSending || input.trim() === "")return null;
 setIsSending(true);
     await sendMessage({text:input.trim()});
     setInput("");
