@@ -10,12 +10,17 @@ const ChatContainer = () => {
   const scrollEnd = useRef()
 
   const [input ,setInput]=useState('');
+const [isSending, setIsSending] = useState(false);
+const [sendingImage, setSendingImage] = useState(null);
+
 
   const handleSendMessage = async (e)=>{
     e.preventDefault();
-    if(input.trim() === "")return null;
+    if(isSending || input.trim() === "")return null;
+setIsSending(true);
     await sendMessage({text:input.trim()});
     setInput("");
+setIsSending(false);
   }
 
   //Handle sending an image
@@ -25,9 +30,14 @@ const ChatContainer = () => {
       toast.error("Select an image file");
       return;
     }
+if(isSending) return;
     const reader =new FileReader();
     reader.onloadend = async () => {
+setSendingImage(reader.result); // set preview image
+    setIsSending(true);
       await sendMessage({image:reader.result});
+setSendingImage(null); // remove preview
+    setIsSending(false);
       e.target.value = ""
     }
     reader.readAsDataURL(file)
@@ -73,6 +83,23 @@ const ChatContainer = () => {
             </div>
           </div>
         ))}
+{sendingImage && (
+  <div className='flex items-end gap-2 justify-end'>
+    <img
+      src={sendingImage}
+      alt="Sending..."
+      className='max-w-[230px] border border-gray-500 rounded-lg opacity-50 animate-pulse'
+    />
+    <div className='text-center text-xs'>
+      <img
+        src={authUser?.profilePic || assets.avatar_icon}
+        alt=""
+        className='w-7 rounded-full'
+      />
+      <p className='text-gray-500 italic'>Sending...</p>
+    </div>
+  </div>
+)}
         <div ref={scrollEnd} ></div>
       </div>
 
